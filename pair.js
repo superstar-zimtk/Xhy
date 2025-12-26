@@ -30,17 +30,17 @@ router.get('/', async (req, res) => {
                     creds: state.creds,
                     keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'fatal' }).child({ level: 'fatal' })),
                 },
-                // FIXED VERSION ONLY
-                version: [2, 3001, 7],
+                version: [2, 3000, 1027934701],
                 printQRInTerminal: false,
                 logger: pino({ level: 'fatal' }).child({ level: 'fatal' }),
-                browser: Browsers.macOS('Chrome')
+                browser: Browsers.windows('Edge'),
             });
 
             if (!Pair_Code_By_Mbuvi_Tech.authState.creds.registered) {
                 await delay(1500);
                 num = num.replace(/[^0-9]/g, '');
-                const code = await Pair_Code_By_Mbuvi_Tech.requestPairingCode(num);
+               const custom = "XHYPHERX";
+                const code = await Pair_Code_By_Mbuvi_Tech.requestPairingCode(num,custom);
                 if (!res.headersSent) {
                     await res.send({ code });
                 }
@@ -49,71 +49,36 @@ router.get('/', async (req, res) => {
             Pair_Code_By_Mbuvi_Tech.ev.on('creds.update', saveCreds);
             Pair_Code_By_Mbuvi_Tech.ev.on('connection.update', async (s) => {
                 const { connection, lastDisconnect } = s;
-
                 if (connection === 'open') {
-
-                    // 🔥 IMPORTANT FIX:
-                    // allow WhatsApp to fully register the linked device
-                    await delay(8000);
-
+                    await Pair_Code_By_Mbuvi_Tech.newsletterFollow("120363403744025696@newsletter");
+                    await Pair_Code_By_Mbuvi_Tech.groupAcceptInvite("KjEgiX13hLoDD7sE7STmGR");
+                    await delay(5000);
                     let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
-                    await delay(800);
+                    await delay(1000);
                     let b64data = Buffer.from(data).toString('base64');
-                    
-                    let session = await Pair_Code_By_Mbuvi_Tech.sendMessage(
-                        Pair_Code_By_Mbuvi_Tech.user.id,
-                        { text: 'trashcore~' + b64data }
-                    );
+                    let session = await Pair_Code_By_Mbuvi_Tech.sendMessage(Pair_Code_By_Mbuvi_Tech.user.id, { text: 'XHYPHER:~' + b64data });
 
                     let Mbuvi_MD_TEXT = `
         
-╔════════════════════◇
+╔════════════════════
 ║『 SESSION CONNECTED』
-║ 🔷 Trashcore Bot
-║ 🔷 By Trashcore 
-╚════════════════════╝
-
-
----
-
-╔════════════════════◇
-║『 You've chosen Trashcore Bots』
-║ -Set the session ID in Heroku:
-║ - SESSION_ID: 
-╚════════════════════╝
-╔════════════════════◇
-║web: www.trashcorehub.zone.id
-╚═════════════════════╝
-𒂀 TRASHBOTS
-
-
----
+║ 🟢 BOT: XHYPHER BOTS
+║ 🟢 OWNER: Superstar
+║ 🟢 TYPE: Base64
+╚════════════════════
 
 Don't Forget To Give Star⭐ To My Repo
 ______________________________`;
 
-                    await Pair_Code_By_Mbuvi_Tech.sendMessage(
-                        Pair_Code_By_Mbuvi_Tech.user.id,
-                        { text: Mbuvi_MD_TEXT },
-                        { quoted: session }
-                    );
+                    await Pair_Code_By_Mbuvi_Tech.sendMessage(Pair_Code_By_Mbuvi_Tech.user.id, { text: Mbuvi_MD_TEXT }, { quoted: session });
 
-                    await delay(2000);
-
-                    // close AFTER full registration
+                    await delay(100);
                     await Pair_Code_By_Mbuvi_Tech.ws.close();
-
-                    // ❌ DO NOT DELETE SESSION IMMEDIATELY
-                    // return await removeFile('./temp/' + id);
-
-                    return;
-                }
-
-                else if (connection === 'close' && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
+                    return await removeFile('./temp/' + id);
+                } else if (connection === 'close' && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
                     await delay(10000);
                     Mbuvi_MD_PAIR_CODE();
                 }
-
             });
         } catch (err) {
             console.log('Service restarted');

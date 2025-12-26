@@ -1,538 +1,293 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trashcore pairing site Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>XHYPHER TECH | PAIR CODE</title>
+
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+
 <style>
-    :root {
-      --primary: linear-gradient(135deg, #FF4500, #228B22);
-      --bg: #D2691E;
-      --glass: rgba(255, 255, 255, 0.05);
-      --text: #ffffff;
-      --muted: #708090;
-      --highlight: #FF1493;
-      --radius: 16px;
-      --blur: 12px;
-      --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      --glow: 0 0 15px rgba(0, 212, 255, 0.3);
-    }
+:root{
+  --primary:#00bfff;
+  --accent:#1e90ff;
+  --dark:#000;
+  --light:#e5f6ff;
+  --glass-bg:rgba(255,255,255,.07);
+  --glass-border:rgba(255,255,255,.2);
+  --transition:.3s ease-in-out;
+}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+  transition:var(--transition);
+}
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      overflow-x: hidden;
-      color: var(--text);
-      padding: 80px 20px 120px; /* Space for header and music player */
-    }
+body{
+  background:#000;
+  color:var(--light);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  overflow-x:hidden;
+  position:relative;
+}
 
-    /* Background with blur effect */
-    .background-image {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -3;
-      filter: blur(8px) brightness(0.6);
-      transform: scale(1.1);
-    }
+/* Edge strips */
+body::before,body::after{
+  content:'';
+  position:fixed;
+  top:0;
+  bottom:0;
+  width:6px;
+  background:var(--accent);
+  z-index:999;
+  animation:slide 5s infinite alternate;
+}
+body::before{left:0}
+body::after{right:0;animation-direction:alternate-reverse}
+@keyframes slide{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
 
-    /* Header with logo */
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+/* Particles */
+#particles-js{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
 
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+/* Navbar */
+.navbar{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:var(--glass-bg);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--glass-border);
+  z-index:1000;
+}
 
-    .logo-img {
-      height: 40px;
-      width: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(0, 212, 255, 0.3);
-      box-shadow: var(--glow);
-    }
+.navbar-container{
+  max-width:1200px;
+  margin:auto;
+  padding:1rem 2rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .logo-text {
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: var(--glow);
-    }
+.logo{
+  font-size:1.6rem;
+  font-weight:700;
+  text-decoration:none;
+  color:var(--light);
+}
+.logo i{
+  color:var(--accent);
+  margin-right:.5rem;
+  animation:pulse 2s infinite;
+}
 
-    /* Battery indicator */
-    .battery-container {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 50px;
-      padding: 0.5rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      font-size: 0.9rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
+.social-icons{
+  display:flex;
+  gap:1rem;
+}
+.social-icons a{
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(255,255,255,.1);
+  color:white;
+  border:1px solid rgba(255,255,255,.2);
+}
+.social-icons a:hover{
+  background:var(--accent);
+  color:black;
+  transform:translateY(-3px);
+}
 
-    .battery-icon {
-      color: var(--highlight);
-      font-size: 1.2rem;
-    }
+/* Hero */
+.hero{
+  padding:8rem 2rem 3rem;
+  text-align:center;
+}
+.hero h1{
+  font-size:3rem;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;
+  color:transparent;
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px var(--primary)}
+  to{text-shadow:0 0 25px var(--accent)}
+}
+.typing-text{
+  margin-top:1rem;
+  display:inline-block;
+  border-right:3px solid var(--accent);
+  white-space:nowrap;
+  overflow:hidden;
+  animation:typing 3.5s steps(40,end),blink .7s infinite;
+}
+@keyframes typing{from{width:0}to{width:100%}}
+@keyframes blink{50%{border-color:transparent}}
 
-    /* Main container */
-    .main-content {
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      position: relative;
-      z-index: 1;
-    }
+/* Sections */
+section{
+  padding:2rem;
+  max-width:1200px;
+  margin:auto;
+}
 
-    /* Pairing box */
-    .box {
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      border-radius: var(--radius);
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: var(--transition);
-    }
+/* Cards */
+.glass{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:20px;
+  backdrop-filter:blur(16px);
+  box-shadow:0 8px 30px rgba(0,0,0,.5);
+  padding:2rem;
+}
 
-    .box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), var(--glow);
-    }
+/* Analytics */
+.analytics-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:2rem;
+}
+.stat{
+  display:flex;
+  justify-content:space-between;
+  background:rgba(255,255,255,.05);
+  padding:.8rem 1rem;
+  border-left:4px solid var(--accent);
+  border-radius:10px;
+}
 
-    .box h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: var(--glow);
-    }
+/* Pair */
+.pair-card{
+  max-width:480px;
+  margin:auto;
+  text-align:center;
+}
+.pair-card input{
+  width:100%;
+  padding:1rem;
+  margin:1rem 0;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.15);
+  color:white;
+}
+.btn{
+  width:100%;
+  padding:.8rem;
+  border-radius:10px;
+  border:none;
+  background:var(--accent);
+  color:black;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn.secondary{
+  background:transparent;
+  color:var(--accent);
+  border:2px solid var(--accent);
+}
+.btn:hover{
+  transform:translateY(-2px);
+}
 
-    .box h5 {
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      font-weight: normal;
-    }
+/* Footer */
+footer{
+  margin-top:auto;
+  background:var(--glass-bg);
+  border-top:4px solid var(--accent);
+  padding:1.5rem;
+  text-align:center;
+}
 
-    /* Input styling */
-    .input-container {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
+@keyframes pulse{
+  50%{transform:scale(1.1)}
+}
 
-    .input-container input {
-      flex: 1;
-      padding: 1rem;
-      border-radius: var(--radius);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.3);
-      color: var(--text);
-      font-family: inherit;
-      transition: var(--transition);
-    }
-
-    .input-container input:focus {
-      outline: none;
-      border-color: var(--highlight);
-      box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
-    }
-
-    .input-container button {
-      padding: 1rem 1.5rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .input-container button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Result display */
-    #pair-result {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      border-radius: var(--radius);
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #copy-code {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--highlight);
-      padding: 0.6rem 1.2rem;
-      border-radius: 50px;
-      color: white;
-      cursor: pointer;
-      font-weight: 600;
-      transition: var(--transition);
-      margin-top: 1rem;
-      display: none;
-    }
-
-    #copy-code:hover {
-      background: rgba(0, 212, 255, 0.1);
-      box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
-    }
-
-    /* Music player - Positioned below pairing container */
-    .music-player {
-      width: 100%;
-      max-width: 500px;
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      z-index: 90;
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    .music-player h3 {
-      color: var(--highlight);
-      margin-bottom: 0.5rem;
-      font-size: 1.2rem;
-    }
-
-    .music-title {
-      font-weight: bold;
-      font-size: 1.1rem;
-      margin-bottom: 0.3rem;
-    }
-
-    .music-subtitle {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .play-btn {
-      background: var(--primary);
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: var(--transition);
-    }
-
-    .play-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .play-btn i {
-      color: white;
-      font-size: 1.5rem;
-    }
-
-    .time-display {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-      .header {
-        padding: 0.8rem 1rem;
-      }
-      
-      .logo-text {
-        font-size: 1.2rem;
-      }
-      
-      body {
-        padding: 70px 15px 100px;
-      }
-      
-      .input-container {
-        flex-direction: column;
-      }
-      
-      .input-container button {
-        width: 100%;
-      }
-      
-      .music-player {
-        padding: 1rem;
-      }
-    }
-  </style>
+@media(max-width:768px){
+  .navbar-container{flex-direction:column;gap:1rem}
+  .hero h1{font-size:2.2rem}
+}
+</style>
 </head>
+
 <body>
-  <!-- Blurred Background Image -->
-  <img src="https://url.bwmxmd.online/Adams.twcferrg.jpg" alt="Trashcore bot Background" class="background-image">
+<div id="particles-js"></div>
 
-  <!-- Header with Logo -->
-  <header class="header">
-    <div class="logo-container">
-      <img src="https://url.bwmxmd.online/Adams.twcferrg.jpg" alt="Trashcore bot Logo" class="logo-img">
-      <div class="logo-text">𝐓𝐑𝐀𝐒𝐇𝐂𝐎𝐑𝐄-𝐏𝐀𝐈𝐑𝐈𝐍𝐆</div>
-    </div>
-    
-    <!-- Battery Indicator -->
-    <div class="battery-container">
-      <i class="fas fa-battery-full battery-icon" id="battery-icon"></i>
-      <span id="battery-level">--%</span>
-    </div>
-  </header>
-
-  <!-- Main Content Container -->
-  <div class="main-content">
-    <!-- Pairing Box -->
-    <div class="box">
-      <h2>PAIRING CODE</h2>
-      <h5>TRASHCORE BOTS </h5>
-      <p>Please enter your number without country code</p>
-      
-      <div class="input-container">
-        <input type="number" id="number" placeholder="put your number" required>
-        <button id="submit">REQUEST CODE</button>
-      </div>
-      
-      <div id="pair-result">
-        <p id="waiting-message" style="display: none;">Please wait...</p>
-      </div>
-      
-      <button id="copy-code" onclick="copyCode()">COPY YOUR CODE</button>
-    </div>
-
-    <!-- Music Player - Positioned below pairing container -->
-    <div class="music-player">
-      <h3>PLAY NOW</h3>
-      <div class="music-title">PLAY SONG</div>
-      <div class="music-subtitle">by Trashcore devs</div>
-      <button class="play-btn" onclick="togglePlay()">
-        <i class="fas fa-pause" id="play-icon"></i>
-      </button>
-      <div class="time-display" id="time1">0:00</div>
-      <div class="music-subtitle">PAIRING SONG</div>
-      <audio id="audio1" src="https://url.bwmxmd.online/Adams.ioeeyulj.m4a" loop></audio>
+<header class="navbar">
+  <div class="navbar-container">
+    <a class="logo"><i class="fas fa-robot"></i>XHYPHER BOTS</a>
+    <div class="social-icons">
+      <a href="https://whatsapp.com/channel/0029VbBSyvgDuMRmt1JTRY12" target="_blank"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://t.me/xhypher2025" target="_blank"><i class="fab fa-telegram"></i></a>
+      <a href="https://github.com/superstar-zimtk" target="_blank"><i class="fab fa-github"></i></a>
     </div>
   </div>
+</header>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
-  <script>
-    // DOM elements
-    const pairResult = document.getElementById("pair-result");
-    const submitBtn = document.getElementById("submit");
-    const numberInput = document.getElementById("number");
-    const copyCodeBtn = document.getElementById("copy-code");
-    const waitingMessage = document.getElementById("waiting-message");
-    const batteryLevel = document.getElementById("battery-level");
-    const batteryIcon = document.getElementById("battery-icon");
+<section class="hero">
+  <h1>Pair Code</h1>
+  <div class="typing-text">Connect to Xhypher bots instantly!</div>
+</section>
 
-    // Copy code function
-    async function copyCode() {
-      const code = pairResult.innerText.replace('CODE: ', '');
-      try {
-        await navigator.clipboard.writeText(code);
-        copyCodeBtn.innerText = "COPIED!";
-        copyCodeBtn.style.backgroundColor = "#00ff00";
-        copyCodeBtn.style.color = "#000";
-        setTimeout(() => {
-          copyCodeBtn.innerText = "COPY CODE";
-          copyCodeBtn.style.backgroundColor = "";
-          copyCodeBtn.style.color = "";
-        }, 2000);
-      } catch (err) {
-        console.error('Failed to copy: ', err);
-      }
-    }
+<section>
+  <div class="glass pair-card">
+    <h2>Xhypher Pair Code</h2>
+    <p>Enter WhatsApp number with country code</p>
+    <input id="phone" placeholder="+263715XXXXXX">
+    <button class="btn" id="generate">Get Code</button>
+    <p id="result"></p>
+    <button class="btn secondary" id="copy" style="display:none">Copy Code</button>
+  </div>
+</section>
 
-    // Submit handler
-    submitBtn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      
-      if (!numberInput.value) {
-        pairResult.innerHTML = '<p style="color:var(--highlight)">Enter your WhatsApp number without Country Code</p>';
-        return;
-      }
-      
-      const cleanNumber = numberInput.value.replace(/[^0-9]/g, "");
-      
-      if (cleanNumber.length < 11) {
-        pairResult.innerHTML = '<p style="color:#ff5555">Invalid Number</p>';
-        return;
-      }
-      
-      // Format number display
-      let formattedNumber = "";
-      const digits = cleanNumber.split('');
-      digits.forEach((digit, index) => {
-        formattedNumber += digit;
-        if (index === 2 || index === 7) {
-          formattedNumber += " ";
-        }
-      });
-      
-      numberInput.type = "text";
-      numberInput.value = "+" + formattedNumber;
-      numberInput.style.color = "var(--highlight)";
-      
-      waitingMessage.style.display = "block";
-      pairResult.innerHTML = "";
-      copyCodeBtn.style.display = "none";
-      
-      try {
-        const { data } = await axios(`/code?number=${cleanNumber}`);
-        const code = data.code || "Service Unavailable";
-        
-        pairResult.innerHTML = `
-          <p style="color:var(--highlight); font-weight:bold; font-size:1.2rem;">
-            CODE: <span style="color:white">${code}</span>
-          </p>
-        `;
-        copyCodeBtn.style.display = "inline-block";
-        waitingMessage.style.display = "none";
-      } catch (error) {
-        pairResult.innerHTML = '<p style="color:#ff5555">Error getting pairing code</p>';
-        waitingMessage.style.display = "none";
-      }
-    });
+<footer>
+  © <span id="year"></span> XHYPHER TECH • Powered by <b>Superstar</b> 💫
+</footer>
 
-    // Music player controls
-    const audio = document.getElementById('audio1');
-    const playBtn = document.querySelector('.play-btn');
-    const playIcon = document.getElementById('play-icon');
-    const timeDisplay = document.getElementById('time1');
-    
-    // Auto-play music when page loads (with user interaction)
-    document.addEventListener('click', function initAudio() {
-      audio.play().then(() => {
-        playIcon.classList.replace('fa-play', 'fa-pause');
-        updateTimeDisplay();
-      }).catch(error => {
-        console.log('Auto-play prevented:', error);
-      });
-      document.removeEventListener('click', initAudio);
-    }, { once: true });
+<script>
+particlesJS("particles-js",{
+  particles:{number:{value:60},color:{value:"#00bfff"},line_linked:{enable:true,color:"#00bfff"},move:{speed:1}},
+  interactivity:{events:{onhover:{enable:true,mode:"grab"}}}
+});
 
-    function togglePlay() {
-      if (audio.paused) {
-        audio.play();
-        playIcon.classList.replace('fa-play', 'fa-pause');
-      } else {
-        audio.pause();
-        playIcon.classList.replace('fa-pause', 'fa-play');
-      }
-    }
+document.getElementById("year").textContent=new Date().getFullYear();
 
-    function updateTimeDisplay() {
-      const minutes = Math.floor(audio.currentTime / 60);
-      const seconds = Math.floor(audio.currentTime % 60);
-      timeDisplay.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
-      
-      if (!audio.paused) {
-        requestAnimationFrame(updateTimeDisplay);
-      }
-    }
+swal("Welcome!", "Don't forget to STAR & FORK the repo 🚀", "info");
 
-    audio.addEventListener('timeupdate', updateTimeDisplay);
+const gen=document.getElementById("generate");
+const copy=document.getElementById("copy");
+const res=document.getElementById("result");
+const phone=document.getElementById("phone");
 
-    // Battery status indicator
-    async function updateBattery() {
-      if (navigator.getBattery) {
-        try {
-          const battery = await navigator.getBattery();
-          
-          const updateBatteryUI = () => {
-            const batteryPercent = Math.round(battery.level * 100);
-            batteryLevel.textContent = `${batteryPercent}%`;
-            
-            // Update battery icon based on level
-            let iconClass = 'fa-battery-empty';
-            if (batteryPercent > 80) iconClass = 'fa-battery-full';
-            else if (batteryPercent > 60) iconClass = 'fa-battery-three-quarters';
-            else if (batteryPercent > 40) iconClass = 'fa-battery-half';
-            else if (batteryPercent > 20) iconClass = 'fa-battery-quarter';
-            
-            // Add charging bolt if charging
-            if (battery.charging) {
-              batteryIcon.className = `fas fa-bolt ${iconClass}`;
-              batteryIcon.style.color = '#00ff00';
-            } else {
-              batteryIcon.className = `fas ${iconClass}`;
-              batteryIcon.style.color = 'var(--highlight)';
-            }
-          };
-          
-          battery.addEventListener('levelchange', updateBatteryUI);
-          battery.addEventListener('chargingchange', updateBatteryUI);
-          updateBatteryUI();
-        } catch (error) {
-          console.error('Battery API error:', error);
-        }
-      } else {
-        batteryLevel.textContent = "N/A";
-      }
-    }
-
-    // Initialize
-    window.addEventListener('load', () => {
-      copyCodeBtn.style.display = "none";
-      updateBattery();
-      
-      // Smooth page load
-      document.body.style.opacity = '0';
-      setTimeout(() => {
-        document.body.style.transition = 'opacity 0.5s ease';
-        document.body.style.opacity = '1';
-      }, 100);
-    });
-  </script>
+gen.onclick=async()=>{
+  const num=phone.value.replace(/\D/g,'');
+  if(!num){res.textContent="Enter number";return;}
+  const {data}=await axios.get(`/code?number=${num}`);
+  res.innerHTML=`<b>${data.code}</b>`;
+  copy.dataset.code=data.code;
+  copy.style.display="block";
+};
+copy.onclick=()=>navigator.clipboard.writeText(copy.dataset.code);
+</script>
 </body>
-  </html>
+</html>
